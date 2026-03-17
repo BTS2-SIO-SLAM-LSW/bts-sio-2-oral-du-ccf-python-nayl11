@@ -13,14 +13,14 @@ Dans ce mode d'accès :
 ## Connexion type
 
 ```python
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text  # create_engine ouvre l'accès à la base, text encapsule une requête SQL textuelle.
 
-engine = create_engine("mysql+pymysql://student:studentpwd@db:3306/boutikpro_ccf")
+engine = create_engine("mysql+pymysql://student:studentpwd@db:3306/boutikpro_ccf")  # Crée le moteur de connexion.
 
-with engine.begin() as conn:
-    rows = conn.execute(text("SELECT id_client, nom FROM client"))
+with engine.begin() as conn:               # Ouvre une transaction automatiquement validée à la fin si tout se passe bien.
+    rows = conn.execute(text("SELECT id_client, nom FROM client"))  # Exécute une requête SELECT.
     for row in rows:
-        print(row)
+        print(row)                         # Affiche chaque ligne retournée.
 ```
 
 ## Idée générale
@@ -37,15 +37,15 @@ SQLAlchemy Core est adapté lorsque l'on souhaite :
 ## 1. Créer une table
 
 ```python
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text  # Importe le moteur SQLAlchemy et l'objet text.
 
-engine = create_engine("mysql+pymysql://student:studentpwd@db:3306/boutikpro_ccf")
+engine = create_engine("mysql+pymysql://student:studentpwd@db:3306/boutikpro_ccf")  # Définit la connexion à MySQL.
 
-with engine.begin() as conn:
+with engine.begin() as conn:                # Démarre une transaction.
     conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS marque (
-            id_marque INT AUTO_INCREMENT PRIMARY KEY,
-            nom_marque VARCHAR(100) NOT NULL UNIQUE
+        CREATE TABLE IF NOT EXISTS marque (           -- Crée la table si elle n'existe pas.
+            id_marque INT AUTO_INCREMENT PRIMARY KEY, -- Clé primaire auto-incrémentée.
+            nom_marque VARCHAR(100) NOT NULL UNIQUE   -- Nom obligatoire et unique.
         )
     """))
 ```
@@ -53,10 +53,10 @@ with engine.begin() as conn:
 ## 2. Ajouter une colonne
 
 ```python
-with engine.begin() as conn:
+with engine.begin() as conn:                # Ouvre une transaction d'écriture.
     conn.execute(text("""
-        ALTER TABLE produit
-        ADD COLUMN description VARCHAR(255) NULL
+        ALTER TABLE produit                 -- Modifie la table produit.
+        ADD COLUMN description VARCHAR(255) NULL  -- Ajoute une colonne texte facultative.
     """))
 ```
 
@@ -65,8 +65,8 @@ with engine.begin() as conn:
 ```python
 with engine.begin() as conn:
     conn.execute(text("""
-        ALTER TABLE produit
-        MODIFY COLUMN prix DECIMAL(10,2) NOT NULL
+        ALTER TABLE produit                      -- Travaille sur la table produit.
+        MODIFY COLUMN prix DECIMAL(10,2) NOT NULL  -- Remplace le type de la colonne prix.
     """))
 ```
 
@@ -75,15 +75,15 @@ with engine.begin() as conn:
 ```python
 with engine.begin() as conn:
     conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS contient (
-            id_commande VARCHAR(50) NOT NULL,
-            id_produit VARCHAR(50) NOT NULL,
-            quantite INT NOT NULL DEFAULT 1,
-            PRIMARY KEY (id_commande, id_produit),
+        CREATE TABLE IF NOT EXISTS contient (              -- Crée la table d'association.
+            id_commande VARCHAR(50) NOT NULL,              -- Référence vers commande.
+            id_produit VARCHAR(50) NOT NULL,               -- Référence vers produit.
+            quantite INT NOT NULL DEFAULT 1,               -- Quantité avec valeur par défaut.
+            PRIMARY KEY (id_commande, id_produit),         -- Clé primaire composée.
             CONSTRAINT fk_contient_commande
-                FOREIGN KEY (id_commande) REFERENCES commande(id_commande),
+                FOREIGN KEY (id_commande) REFERENCES commande(id_commande),  -- Clé étrangère vers commande.
             CONSTRAINT fk_contient_produit
-                FOREIGN KEY (id_produit) REFERENCES produit(id_produit)
+                FOREIGN KEY (id_produit) REFERENCES produit(id_produit)      -- Clé étrangère vers produit.
         )
     """))
 ```
@@ -92,7 +92,7 @@ with engine.begin() as conn:
 
 ```python
 with engine.begin() as conn:
-    conn.execute(text("DROP TABLE IF EXISTS marque"))
+    conn.execute(text("DROP TABLE IF EXISTS marque"))  # Supprime la table marque si elle existe.
 ```
 
 ---
@@ -102,13 +102,13 @@ with engine.begin() as conn:
 ## 1. INSERT
 
 ```python
-with engine.begin() as conn:
+with engine.begin() as conn:   # Ouvre une transaction d'écriture.
     conn.execute(
         text("""
-            INSERT INTO client (nom, prenom, e_mail)
-            VALUES (:nom, :prenom, :email)
+            INSERT INTO client (nom, prenom, e_mail)   -- Table et colonnes ciblées.
+            VALUES (:nom, :prenom, :email)             -- Paramètres nommés SQLAlchemy.
         """),
-        {"nom": "Durand", "prenom": "Alice", "email": "alice.durand@example.com"}
+        {"nom": "Durand", "prenom": "Alice", "email": "alice.durand@example.com"}  # Valeurs associées aux paramètres.
     )
 ```
 
@@ -118,12 +118,12 @@ with engine.begin() as conn:
 with engine.begin() as conn:
     conn.execute(
         text("""
-            INSERT INTO produit (id_produit, libelle, prix, id_categorie_produit)
-            VALUES (:id_produit, :libelle, :prix, :id_categorie)
+            INSERT INTO produit (id_produit, libelle, prix, id_categorie_produit)  -- Colonnes remplies.
+            VALUES (:id_produit, :libelle, :prix, :id_categorie)                    -- Paramètres nommés.
         """),
         [
-            {"id_produit": "P900", "libelle": "Webcam", "prix": 59.90, "id_categorie": 1},
-            {"id_produit": "P901", "libelle": "Casque", "prix": 39.90, "id_categorie": 1}
+            {"id_produit": "P900", "libelle": "Webcam", "prix": 59.90, "id_categorie": 1},  # Première ligne.
+            {"id_produit": "P901", "libelle": "Casque", "prix": 39.90, "id_categorie": 1}   # Deuxième ligne.
         ]
     )
 ```
@@ -131,10 +131,10 @@ with engine.begin() as conn:
 ## 3. SELECT simple
 
 ```python
-with engine.connect() as conn:
-    result = conn.execute(text("SELECT id_client, nom, prenom FROM client ORDER BY nom"))
+with engine.connect() as conn:   # Ouvre une connexion de lecture.
+    result = conn.execute(text("SELECT id_client, nom, prenom FROM client ORDER BY nom"))  # Exécute une requête triée.
     for row in result:
-        print(row)
+        print(row)               # Affiche chaque ligne du résultat.
 ```
 
 ## 4. SELECT avec jointure
@@ -142,10 +142,10 @@ with engine.connect() as conn:
 ```python
 with engine.connect() as conn:
     result = conn.execute(text("""
-        SELECT c.id_commande, cl.nom, cl.prenom, c.date_commande, c.montant_total
-        FROM commande c
-        JOIN client cl ON c.id_client = cl.id_client
-        ORDER BY c.date_commande DESC
+        SELECT c.id_commande, cl.nom, cl.prenom, c.date_commande, c.montant_total  -- Colonnes affichées.
+        FROM commande c                         -- Table commande aliasée en c.
+        JOIN client cl ON c.id_client = cl.id_client  -- Jointure avec client.
+        ORDER BY c.date_commande DESC          -- Tri du plus récent au plus ancien.
     """))
     for row in result:
         print(row)
@@ -156,10 +156,10 @@ with engine.connect() as conn:
 ```python
 with engine.connect() as conn:
     result = conn.execute(text("""
-        SELECT id_client, COUNT(*) AS nb_commandes, SUM(montant_total) AS total_depense
-        FROM commande
-        GROUP BY id_client
-        HAVING COUNT(*) >= 1
+        SELECT id_client, COUNT(*) AS nb_commandes, SUM(montant_total) AS total_depense  -- Statistiques calculées.
+        FROM commande                         -- Table source.
+        GROUP BY id_client                    -- Regroupe par client.
+        HAVING COUNT(*) >= 1                  -- Garde les groupes non vides.
     """))
     for row in result:
         print(row)
@@ -170,8 +170,8 @@ with engine.connect() as conn:
 ```python
 with engine.begin() as conn:
     conn.execute(
-        text("UPDATE client SET e_mail = :email WHERE id_client = :id_client"),
-        {"email": "nouveau.mail@example.com", "id_client": 1}
+        text("UPDATE client SET e_mail = :email WHERE id_client = :id_client"),  # Met à jour le mail d'un client.
+        {"email": "nouveau.mail@example.com", "id_client": 1}                # Valeurs des paramètres nommés.
     )
 ```
 
@@ -180,27 +180,27 @@ with engine.begin() as conn:
 ```python
 with engine.begin() as conn:
     conn.execute(
-        text("DELETE FROM facture WHERE id_facture = :id_facture"),
-        {"id_facture": 10}
+        text("DELETE FROM facture WHERE id_facture = :id_facture"),  # Supprime la facture visée.
+        {"id_facture": 10}                                          # Identifiant de la facture à supprimer.
     )
 ```
 
 ## 8. Transaction sur plusieurs requêtes
 
 ```python
-with engine.begin() as conn:
+with engine.begin() as conn:   # Une seule transaction pour plusieurs requêtes.
     conn.execute(
         text("""
-            INSERT INTO commande (id_commande, date_commande, montant_total, id_client)
-            VALUES (:id_commande, NOW(), :montant_total, :id_client)
+            INSERT INTO commande (id_commande, date_commande, montant_total, id_client)  -- Création d'une commande.
+            VALUES (:id_commande, NOW(), :montant_total, :id_client)                     -- NOW() donne la date/heure SQL courante.
         """),
         {"id_commande": "CMD950", "montant_total": 129.90, "id_client": 1}
     )
 
     conn.execute(
         text("""
-            INSERT INTO facture (id_facture, montant_ttc, date_facture, id_commande)
-            VALUES (:id_facture, :montant_ttc, CURDATE(), :id_commande)
+            INSERT INTO facture (id_facture, montant_ttc, date_facture, id_commande)  -- Création de la facture liée.
+            VALUES (:id_facture, :montant_ttc, CURDATE(), :id_commande)               -- CURDATE() donne la date du jour.
         """),
         {"id_facture": 950, "montant_ttc": 129.90, "id_commande": "CMD950"}
     )
@@ -219,89 +219,42 @@ Ces exemples sont fournis à titre pédagogique.
 
 ```python
 with engine.begin() as conn:
-    conn.execute(text("CREATE USER IF NOT EXISTS 'tp_user'@'%' IDENTIFIED BY 'MotDePasse123!'"))
+    conn.execute(text("CREATE USER IF NOT EXISTS 'tp_user'@'%' IDENTIFIED BY 'MotDePasse123!'"))  # Crée le compte SQL.
 ```
 
 ## 2. Accorder des droits SELECT
 
 ```python
 with engine.begin() as conn:
-    conn.execute(text("GRANT SELECT ON boutikpro_ccf.* TO 'tp_user'@'%'"))
+    conn.execute(text("GRANT SELECT ON boutikpro_ccf.* TO 'tp_user'@'%'"))  # Accorde la lecture sur toute la base.
 ```
 
 ## 3. Accorder des droits SELECT, INSERT, UPDATE, DELETE
 
 ```python
 with engine.begin() as conn:
-    conn.execute(text("GRANT SELECT, INSERT, UPDATE, DELETE ON boutikpro_ccf.* TO 'tp_user'@'%'"))
+    conn.execute(text("GRANT SELECT, INSERT, UPDATE, DELETE ON boutikpro_ccf.* TO 'tp_user'@'%'"))  # Accorde les principaux droits de LMD.
 ```
 
 ## 4. Accorder des droits sur une table précise
 
 ```python
 with engine.begin() as conn:
-    conn.execute(text("GRANT SELECT, INSERT ON boutikpro_ccf.commande TO 'tp_user'@'%'"))
+    conn.execute(text("GRANT SELECT, INSERT ON boutikpro_ccf.commande TO 'tp_user'@'%'"))  # Limite les droits à la table commande.
 ```
 
 ## 5. Retirer un droit
 
 ```python
 with engine.begin() as conn:
-    conn.execute(text("REVOKE INSERT ON boutikpro_ccf.commande FROM 'tp_user'@'%'"))
+    conn.execute(text("REVOKE INSERT ON boutikpro_ccf.commande FROM 'tp_user'@'%'"))  # Retire le droit INSERT.
 ```
 
 ## 6. Afficher les droits
 
 ```python
 with engine.connect() as conn:
-    result = conn.execute(text("SHOW GRANTS FOR 'tp_user'@'%'"))
+    result = conn.execute(text("SHOW GRANTS FOR 'tp_user'@'%'"))  # Liste les privilèges du compte.
     for row in result:
-        print(row)
-```
-
-## 7. Supprimer l'utilisateur
-
-```python
-with engine.begin() as conn:
-    conn.execute(text("DROP USER IF EXISTS 'tp_user'@'%'"))
-```
-
----
-
-# Exemple de mini CRUD complet en SQLAlchemy Core
-
-```python
-from sqlalchemy import create_engine, text
-
-engine = create_engine("mysql+pymysql://student:studentpwd@db:3306/boutikpro_ccf")
-
-with engine.begin() as conn:
-    # CREATE
-    result = conn.execute(
-        text("INSERT INTO client (nom, prenom, e_mail) VALUES (:nom, :prenom, :email)"),
-        {"nom": "Martin", "prenom": "Léo", "email": "leo.martin@example.com"}
-    )
-    new_id = result.lastrowid
-
-with engine.connect() as conn:
-    # READ
-    row = conn.execute(
-        text("SELECT id_client, nom, prenom, e_mail FROM client WHERE id_client = :id_client"),
-        {"id_client": new_id}
-    ).mappings().first()
-    print(row)
-
-with engine.begin() as conn:
-    # UPDATE
-    conn.execute(
-        text("UPDATE client SET e_mail = :email WHERE id_client = :id_client"),
-        {"email": "leo.martin.pro@example.com", "id_client": new_id}
-    )
-
-with engine.begin() as conn:
-    # DELETE
-    conn.execute(
-        text("DELETE FROM client WHERE id_client = :id_client"),
-        {"id_client": new_id}
-    )
+        print(row)  # Affiche chaque ligne de privilèges.
 ```
