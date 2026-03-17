@@ -35,5 +35,4 @@ if __name__ == "__main__":
     print("Commande d'exécution : python -m src.dbapi.main")
     print()
     list_clients()
-    print("
-Compléter ce fichier pour réaliser le CRUD demandé.")
+    print("Compléter ce fichier pour réaliser le CRUD demandé.")
