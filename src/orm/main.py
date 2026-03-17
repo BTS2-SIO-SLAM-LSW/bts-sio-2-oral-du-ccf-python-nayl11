@@ -25,5 +25,4 @@ if __name__ == "__main__":
     with Session(engine) as session:
         for client in session.query(Client).order_by(Client.id_client).all():
             print(client.id_client, client.nom, client.prenom, client.email)
-    print("
-Compléter ce fichier pour réaliser le CRUD demandé.")
+    print("Compléter ce fichier pour réaliser le CRUD demandé.")

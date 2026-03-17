@@ -9,5 +9,6 @@ if not exist .env copy .env.example .env
 
 echo.
 echo Projet local prepare.
-echo Pensez a configurer .env puis a executer les scripts SQL MySQL.
+echo Etape suivante : creer la base boutikpro_ccf puis injecter sql\01_schema.sql et sql\02_seed.sql.
+echo Ensuite lancer python -m src.dbapi.main ou un autre mode.
 endlocal

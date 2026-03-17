@@ -17,5 +17,4 @@ if __name__ == "__main__":
     print("Commande d'exécution : python -m src.core.main")
     print()
     list_clients()
-    print("
-Compléter ce fichier pour réaliser le CRUD demandé.")
+    print("Compléter ce fichier pour réaliser le CRUD demandé.")

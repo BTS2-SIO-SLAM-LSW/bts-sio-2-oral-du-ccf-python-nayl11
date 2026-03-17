@@ -3,14 +3,14 @@
 Ce guide décrit l'installation complète sur Windows, Linux, macOS et WSL.
 
 ## Outils nécessaires pour le CCF
-- Git
-- Python 3.11 ou version proche
-- pip
-- un environnement virtuel Python
-- MySQL 8.x
-- un terminal adapté au système
-- l'éditeur PlantUML en ligne : `https://editor.plantuml.com/`
-- éventuellement Visual Studio Code pour éditer les fichiers du projet
+- Git ;
+- Python 3.11 ou version proche ;
+- pip ;
+- un environnement virtuel Python ;
+- MySQL 8.x avec client `mysql` ;
+- un terminal adapté au système ;
+- l'éditeur PlantUML en ligne : `https://editor.plantuml.com/` ;
+- éventuellement Visual Studio Code pour éditer les fichiers du projet.
 
 ## 1. Clonage du dépôt
 ```bash
@@ -27,15 +27,26 @@ cd ccf_boutikpro_codespaces
 
 Ces scripts préparent le projet local : environnement virtuel, dépendances Python et fichier `.env`.
 
-## 3. Base de données MySQL
-Créer une base MySQL, puis exécuter :
+## 3. Configuration de la base MySQL
+Créer la base `boutikpro_ccf`, puis exécuter les scripts SQL dans cet ordre :
 
 ```bash
-mysql -u root -p < sql/01_schema.sql
-mysql -u root -p < sql/02_seed.sql
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS boutikpro_ccf CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p boutikpro_ccf < sql/01_schema.sql
+mysql -u root -p boutikpro_ccf < sql/02_seed.sql
 ```
 
 Adapter ensuite le fichier `.env` à votre installation locale.
+
+Exemple local typique :
+
+```env
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=boutikpro_ccf
+DB_USER=root
+DB_PASSWORD=votre_mot_de_passe
+```
 
 ## 4. PlantUML
 Utiliser la version recommandée en ligne :
@@ -47,10 +58,12 @@ https://editor.plantuml.com/
 Copier ensuite le contenu final dans `uml/usecase.puml`.
 
 ## 5. Lancement des squelettes Python
+Toujours depuis la racine du projet et après activation de l'environnement virtuel :
+
 ```bash
-python src/dbapi/main.py
-python src/core/main.py
-python src/orm/main.py
+python -m src.dbapi.main
+python -m src.core.main
+python -m src.orm.main
 ```
 
 ## 6. Consignes spécifiques par système
@@ -62,6 +75,11 @@ python src/orm/main.py
 
 ```bat
 scripts\local\setup_windows.bat
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS boutikpro_ccf CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p boutikpro_ccf < sql\01_schema.sql
+mysql -u root -p boutikpro_ccf < sql\02_seed.sql
+.venv\Scripts\activate.bat
+python -m src.dbapi.main
 ```
 
 ### Windows (.ps1)
@@ -71,6 +89,11 @@ scripts\local\setup_windows.bat
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\local\setup_windows.ps1
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS boutikpro_ccf CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+cmd /c "mysql -u root -p boutikpro_ccf < sql\01_schema.sql"
+cmd /c "mysql -u root -p boutikpro_ccf < sql\02_seed.sql"
+.\.venv\Scripts\Activate.ps1
+python -m src.dbapi.main
 ```
 
 ### Linux
@@ -79,6 +102,11 @@ powershell -ExecutionPolicy Bypass -File .\scripts\local\setup_windows.ps1
 
 ```bash
 bash scripts/local/setup_linux.sh
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS boutikpro_ccf CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p boutikpro_ccf < sql/01_schema.sql
+mysql -u root -p boutikpro_ccf < sql/02_seed.sql
+source .venv/bin/activate
+python -m src.dbapi.main
 ```
 
 ### macOS
@@ -87,6 +115,11 @@ bash scripts/local/setup_linux.sh
 
 ```bash
 bash scripts/local/setup_macos.sh
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS boutikpro_ccf CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p boutikpro_ccf < sql/01_schema.sql
+mysql -u root -p boutikpro_ccf < sql/02_seed.sql
+source .venv/bin/activate
+python -m src.dbapi.main
 ```
 
 ### WSL
@@ -96,33 +129,24 @@ bash scripts/local/setup_macos.sh
 
 ```bash
 bash scripts/local/setup_wsl.sh
-```
-
-
-## Lancer les modes Python
-
-Une fois l'environnement virtuel activé et depuis la racine du projet :
-
-### Windows PowerShell
-
-```powershell
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS boutikpro_ccf CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p boutikpro_ccf < sql/01_schema.sql
+mysql -u root -p boutikpro_ccf < sql/02_seed.sql
+source .venv/bin/activate
 python -m src.dbapi.main
-python -m src.core.main
-python -m src.orm.main
 ```
 
-### Windows CMD
+## Rappel important
+Ne pas lancer :
 
-```bat
-python -m src.dbapi.main
-python -m src.core.main
-python -m src.orm.main
+```bash
+python src/dbapi/main.py
 ```
 
-### Linux / macOS / WSL
+Préférer :
 
 ```bash
 python -m src.dbapi.main
-python -m src.core.main
-python -m src.orm.main
 ```
+
+Le même principe s'applique à `src.core.main` et `src.orm.main`.
