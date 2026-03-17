@@ -7,7 +7,7 @@
 | Démarrage | [START-HERE](START-HERE.md) | Feuille de route de l'étudiant | OK |
 | Sujet | [SUBJECT](SUBJECT.md) | Énoncé complet du CCF | OK |
 | Option 1 - Installation distante | [Guide installation distante](docs/INSTALLATION-CODESPACE.md) | Lancement avec GitHub Codespaces et outils en ligne | OK |
-| Option E - Installation locale | [Guide installation locale](docs/INSTALLATION-LOCALE.md) | Installation sur poste personnel | OK |
+| Option 2 - Installation locale | [Guide installation locale](docs/INSTALLATION-LOCALE.md) | Installation sur poste personnel | OK |
 | CRUD Python | [Guide CRUD](docs/guides/CRUD_PYTHON.md) | Rappels Create / Read / Update / Delete | OK |
 | DB-API | [Guide DB-API](docs/guides/PYTHON_DB_API.md) | Connexion native MySQL en Python | OK |
 | SQLAlchemy Core | [Guide Core](docs/guides/SQLALCHEMY_CORE.md) | Requêtes SQLAlchemy Core | OK |
