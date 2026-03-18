@@ -13,6 +13,7 @@
 | SQLAlchemy Core | [Guide Core](docs/guides/SQLALCHEMY_CORE.md) | Requêtes SQLAlchemy Core | OK |
 | SQLAlchemy ORM | [Guide ORM](docs/guides/SQLALCHEMY_ORM.md) | Mapping classes / tables | OK |
 | MCD / MLD | [Guide Modélisation](docs/guides/MCD_MLD.md) | Passage du MCD au MLD | OK |
+| Looping | [Guide Looping](docs/guides/LOOPING.md) | Utilisation du logiciel Looping | OK |
 | UML - Cas d'utilisation | [Guide UML](docs/phase-01/01-diagramme-cas-utilisation.md) | TP PlantUML sur le diagramme de l'application | OK |
 | Questions | [Questions du TP](docs/questions/QUESTIONS-TP.md) | Questions de cours liées au TP | OK |
 | Évaluation | [Grille](docs/grille_evaluation.md) | Barème indicatif | OK |
@@ -104,6 +105,77 @@ Cette option permet de travailler hors Codespaces, sur Windows, Linux, macOS ou 
 ```text
 https://editor.plantuml.com/
 ```
+
+
+## Installation facultative de Looping
+
+### Brève description
+Looping est un logiciel de modélisation de données utilisé pour construire des schémas Merise tels que le MCD et le MLD. Son installation est facultative dans ce CCF : vous pouvez l'utiliser pour dessiner vos modèles et vérifier visuellement les cardinalités et les associations.
+
+Le guide d'utilisation est disponible ici :
+- [docs/guides/LOOPING.md](docs/guides/LOOPING.md)
+
+### Windows (.bat)
+Si vous disposez d'un installateur de Looping, vous pouvez lancer son exécution depuis un script batch de ce type :
+
+```bat
+@echo off
+set INSTALLER=C:\chemin\vers\LoopingSetup.exe
+if exist "%INSTALLER%" (
+    start "" "%INSTALLER%"
+) else (
+    echo Installateur non trouvé : %INSTALLER%
+)
+```
+
+### Windows (.ps1)
+Exemple PowerShell :
+
+```powershell
+$installer = "C:\chemin\vers\LoopingSetup.exe"
+if (Test-Path $installer) {
+    Start-Process -FilePath $installer
+} else {
+    Write-Host "Installateur non trouvé : $installer"
+}
+```
+
+### macOS
+Si vous disposez d'une archive ou d'une application compatible macOS, ouvrez-la depuis le Terminal :
+
+```bash
+open /chemin/vers/Looping.app
+```
+
+Si Looping n'est pas disponible nativement sur votre version de macOS, utilisez un autre outil de modélisation accepté par votre enseignant.
+
+### Linux
+Si vous disposez d'un exécutable Java ou d'un paquet compatible Linux, adaptez la commande selon votre fichier :
+
+```bash
+chmod +x /chemin/vers/looping
+/chemin/vers/looping
+```
+
+ou, si la version fournie s'appuie sur Java :
+
+```bash
+java -jar /chemin/vers/looping.jar
+```
+
+### WSL
+Sous WSL, deux approches sont possibles :
+- lancer Looping côté Windows ;
+- lancer une version Java / Linux si votre environnement graphique WSL le permet.
+
+Exemple côté Windows depuis WSL :
+
+```bash
+cmd.exe /c start "" "C:\chemin\vers\LoopingSetup.exe"
+```
+
+Pour l'installation locale générale du CCF, consulter :
+- [docs/INSTALLATION-LOCALE.md](docs/INSTALLATION-LOCALE.md)
 
 ## Où se trouvent les 3 modes d'accès Python et comment les lancer
 

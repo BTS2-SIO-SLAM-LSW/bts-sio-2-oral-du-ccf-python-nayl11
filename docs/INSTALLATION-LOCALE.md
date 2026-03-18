@@ -1,4 +1,4 @@
-# Option E - Installation locale
+# Option 2 - Installation locale
 
 Ce guide décrit l'installation complète sur Windows, Linux, macOS et WSL.
 
@@ -150,3 +150,65 @@ python -m src.dbapi.main
 ```
 
 Le même principe s'applique à `src.core.main` et `src.orm.main`.
+
+
+## 7. Installation facultative de Looping
+Looping est un logiciel de modélisation de données qui peut être utilisé pour représenter un MCD et préparer le passage au MLD. Son installation est facultative.
+
+Guide d'utilisation :
+- [docs/guides/LOOPING.md](guides/LOOPING.md)
+
+### Windows (.bat)
+Exemple de lancement d'un installateur :
+
+```bat
+@echo off
+set INSTALLER=C:\chemin\vers\LoopingSetup.exe
+if exist "%INSTALLER%" (
+    start "" "%INSTALLER%"
+) else (
+    echo Installateur non trouvé : %INSTALLER%
+)
+```
+
+### Windows (.ps1)
+Exemple PowerShell :
+
+```powershell
+$installer = "C:\chemin\vers\LoopingSetup.exe"
+if (Test-Path $installer) {
+    Start-Process -FilePath $installer
+} else {
+    Write-Host "Installateur non trouvé : $installer"
+}
+```
+
+### Linux
+Si vous disposez d'un exécutable ou d'un fichier Java :
+
+```bash
+chmod +x /chemin/vers/looping
+/chemin/vers/looping
+```
+
+ou :
+
+```bash
+java -jar /chemin/vers/looping.jar
+```
+
+### macOS
+Si vous disposez d'une application compatible :
+
+```bash
+open /chemin/vers/Looping.app
+```
+
+### WSL
+Pour WSL, il est généralement plus simple de lancer Looping côté Windows :
+
+```bash
+cmd.exe /c start "" "C:\chemin\vers\LoopingSetup.exe"
+```
+
+Sinon, utilisez une version Java / Linux si votre environnement graphique WSL le permet.
